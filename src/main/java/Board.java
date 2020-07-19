@@ -5,7 +5,7 @@ public class Board {
     private int dim;
     WinCondition winCondition;
     boolean setBoard(int i, int j, int player) {
-        if(board[i][j] != 0 || i >= dim || j >= dim)
+        if(i >= dim || j >= dim || i < 0 || j < 0 || board[i][j] != 0)
             return false;
         board[i][j] = player;
         return true;
@@ -28,6 +28,9 @@ public class Board {
     Board(int n, WinCondition w) {
         dim = n;
         board = new int[n][n];
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+                board[i][j] = 0;
         winCondition = w;
     }
 

@@ -1,9 +1,16 @@
 package main.java;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Ui {
     private int dim;
+    private Scanner scanner;
+
+    Ui(int dim) {
+        scanner = new Scanner(System.in);
+        this.dim = dim;
+    }
 
     private String multiplyString(int n, char c) {
         char[] arr = new char[n];
@@ -31,7 +38,21 @@ public class Ui {
         System.out.println("player " + player + " won!");
     }
 
-    Ui(int dim) {
-        this.dim = dim;
+    void draw() {
+        System.out.println("Draw!");
+    }
+
+    int[] getPlayerInput(boolean wrong_before) {
+        if(wrong_before)
+            System.out.println("Invalid input! try again");
+        System.out.println("Enter row:");
+        int row = scanner.nextInt();
+        System.out.println("Enter col:");
+        int col = scanner.nextInt();
+        return new int[]{row, col};
+    }
+
+    public void turn(int current_player) {
+        System.out.println("It's " + current_player + " turn!");
     }
 }

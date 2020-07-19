@@ -1,5 +1,7 @@
 package main.java;
 
+import java.util.Arrays;
+
 public class Game {
     private static Board board;
     private Ui ui;
@@ -12,18 +14,26 @@ public class Game {
     }
 
     void start() {
-        int current_player = 1;
-        do{
-            int i, j;
-            do {
-                int[] a = ui.getPlayerInput();
+        int current_player = 2;
+        int tie = 0;
+        do {
+            current_player = 3 - current_player;
+            ui.turn(current_player);
+            int[] a = ui.getPlayerInput(false);
+            int i = a[0], j = a[1];
+            while (!board.setBoard(i, j, current_player)) {
+                a = ui.getPlayerInput(true);
                 i = a[0];
                 j = a[1];
-            } while(!board.setBoard(i, j, current_player));
-            current_player = 3 - current_player;
+            }
+            ui.print_board(board.getBoard());
+            tie += 1;
 
-        } while(!board.checkWon());
-        ui.won_player(current_player);
+        } while(!board.checkWon() && tie < dim * dim);
+        if(tie == dim * dim)
+            ui.draw();
+        else
+            ui.won_player(current_player);
     }
 
     void initUi() {
@@ -34,8 +44,9 @@ public class Game {
         WinCondition w = new WinCondition() {
             private boolean check_row(Board board, int[][] toBeChecked, int dim) {
                 int player = board.getPlayer(toBeChecked[0]);
-                if(player == 0)
+                if(player == 0) {
                     return false;
+                }
                 for(int i = 1; i < dim; i++) {
                     int player2 = board.getPlayer(toBeChecked[i]);
                     if(player != player2)
@@ -62,8 +73,8 @@ public class Game {
 
                 for(int i = 0; i < dim; i++) {
                     for(int j = 0; j < dim; j++) {
-                        toBeChecked[i][0] = i;
-                        toBeChecked[i][1] = j;
+                        toBeChecked[j][0] = i;
+                        toBeChecked[j][1] = j;
                     }
                     if(check_row(board, toBeChecked, dim))
                         return true;
@@ -71,8 +82,8 @@ public class Game {
 
                 for(int i = 0; i < dim; i++) {
                     for(int j = 0; j < dim; j++) {
-                        toBeChecked[i][0] = j;
-                        toBeChecked[i][1] = i;
+                        toBeChecked[j][0] = j;
+                        toBeChecked[j][1] = i;
                     }
                     if(check_row(board, toBeChecked, dim))
                         return true;
@@ -81,6 +92,6 @@ public class Game {
                 return false;
             }
         };
-        Board board = new Board(dim, w);
+        board = new Board(dim, w);
     }
 }
